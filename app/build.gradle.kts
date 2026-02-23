@@ -92,8 +92,8 @@ android {
                 signingConfig = signingConfigs.getByName("myConfig")
             }
             manifestPlaceholders["app_name"] = "@string/app_name"
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
