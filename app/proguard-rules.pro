@@ -26,6 +26,9 @@
 # 包含有类名->混淆后类名的映射关系
 -verbose
 
+# 保留 R8 的 shrink/optimize，但禁用名称混淆
+-dontobfuscate
+
 # 保留Annotation不混淆
 -keepattributes *Annotation*,InnerClasses
 
