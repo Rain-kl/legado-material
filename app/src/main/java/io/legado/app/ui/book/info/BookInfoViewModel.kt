@@ -11,6 +11,7 @@ import io.legado.app.constant.AppLog
 import io.legado.app.constant.AppPattern
 import io.legado.app.constant.BookType
 import io.legado.app.constant.EventBus
+import io.legado.app.cust.webdav.CustWebDavBookLocator
 import io.legado.app.data.appDb
 import io.legado.app.data.entities.Book
 import io.legado.app.data.entities.BookChapter
@@ -35,6 +36,7 @@ import io.legado.app.model.ReadBook
 import io.legado.app.model.ReadManga
 import io.legado.app.model.analyzeRule.AnalyzeUrl
 import io.legado.app.model.localBook.LocalBook
+import io.legado.app.model.analyzeRule.CustomUrl
 import io.legado.app.model.webBook.WebBook
 import io.legado.app.utils.ArchiveUtils
 import io.legado.app.utils.UrlUtil
@@ -125,7 +127,9 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
         executeLazy(executeContext = IO) {
             if (book.isLocal) {
                 book.tocUrl = ""
-                book.getRemoteUrl()?.let {
+                val remoteUrl = book.getRemoteUrl()
+                    ?: CustWebDavBookLocator.findBookPathByName(book.originName)
+                remoteUrl?.let {
                     val bookWebDav = AppWebDav.defaultBookWebDav
                         ?: throw NoStackTraceException("webDav没有配置")
                     val remoteBook = bookWebDav.getRemoteBook(it)
@@ -135,6 +139,7 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
                         val uri = bookWebDav.downloadRemoteBook(remoteBook)
                         book.bookUrl = if (uri.isContentScheme()) uri.toString() else uri.path!!
                         book.lastCheckTime = remoteBook.lastModify
+                        book.origin = BookType.webDavTag + CustomUrl(it).toString()
                     }
                 }
             } else {
@@ -463,7 +468,7 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
     fun delBook(deleteOriginal: Boolean = false, success: (() -> Unit)? = null) {
         execute {
             bookData.value?.let {
-                it.delete()
+                appDb.bookDao.delete(it)
                 inBookshelf = false
                 if (it.isLocal) {
                     LocalBook.deleteBook(it, deleteOriginal)

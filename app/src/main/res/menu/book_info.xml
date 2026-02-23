@@ -20,6 +20,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/menu_download_remote"
+        android:title="@string/download_from_web_dav"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_refresh"
         android:title="@string/refresh"
         app:showAsAction="never" />
@@ -75,6 +80,11 @@
     <item
         android:id="@+id/menu_text_moderation"
         android:title="@string/text_moderation"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_delete_book"
+        android:title="@string/delete"
         app:showAsAction="never" />
 
     <item

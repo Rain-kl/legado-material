@@ -260,6 +260,9 @@ class BookInfoActivity :
             viewModel.bookData.value?.isLocalTxt ?: false
         menu.findItem(R.id.menu_upload)?.isVisible =
             viewModel.bookData.value?.isLocal ?: false
+        menu.findItem(R.id.menu_download_remote)?.isVisible =
+            viewModel.bookData.value?.isLocal == true
+        menu.findItem(R.id.menu_delete_book)?.isVisible = viewModel.inBookshelf
         menu.findItem(R.id.menu_delete_alert)?.isChecked =
             LocalConfig.bookInfoDeleteAlert
         return super.onMenuOpened(featureId, menu)
@@ -331,6 +334,7 @@ class BookInfoActivity :
             }
 
             R.id.menu_delete_alert -> LocalConfig.bookInfoDeleteAlert = !item.isChecked
+            R.id.menu_delete_book -> deleteBook()
             R.id.menu_upload -> {
                 viewModel.getBook()?.let { book ->
                     book.getRemoteUrl()?.let {
@@ -341,6 +345,14 @@ class BookInfoActivity :
                             cancelButton()
                         }
                     } ?: upLoadBook(book)
+                }
+            }
+
+            R.id.menu_download_remote -> {
+                viewModel.getBook()?.let { book ->
+                    // Force refresh flow to redownload from WebDav and overwrite local file.
+                    book.lastCheckTime = Long.MIN_VALUE
+                    refreshBook()
                 }
             }
         }

@@ -70,7 +70,7 @@ object WebBook {
         //检测书源是否已登录
         bookSource.loginCheckJs?.let { checkJs ->
             if (checkJs.isNotBlank()) {
-                res = analyzeUrl.evalJS(checkJs, res) as StrResponse
+                res = applyLoginCheckResult(bookSource, analyzeUrl, checkJs, res)
             }
         }
         checkRedirect(bookSource, res)
@@ -120,7 +120,7 @@ object WebBook {
         //检测书源是否已登录
         bookSource.loginCheckJs?.let { checkJs ->
             if (checkJs.isNotBlank()) {
-                res = analyzeUrl.evalJS(checkJs, result = res) as StrResponse
+                res = applyLoginCheckResult(bookSource, analyzeUrl, checkJs, res)
             }
         }
         checkRedirect(bookSource, res)
@@ -185,7 +185,7 @@ object WebBook {
             //检测书源是否已登录
             bookSource.loginCheckJs?.let { checkJs ->
                 if (checkJs.isNotBlank()) {
-                    res = analyzeUrl.evalJS(checkJs, result = res) as StrResponse
+                    res = applyLoginCheckResult(bookSource, analyzeUrl, checkJs, res)
                 }
             }
             checkRedirect(bookSource, res)
@@ -261,7 +261,7 @@ object WebBook {
                 //检测书源是否已登录
                 bookSource.loginCheckJs?.let { checkJs ->
                     if (checkJs.isNotBlank()) {
-                        res = analyzeUrl.evalJS(checkJs, result = res) as StrResponse
+                        res = applyLoginCheckResult(bookSource, analyzeUrl, checkJs, res)
                     }
                 }
                 checkRedirect(bookSource, res)
@@ -346,7 +346,7 @@ object WebBook {
             //检测书源是否已登录
             bookSource.loginCheckJs?.let { checkJs ->
                 if (checkJs.isNotBlank()) {
-                    res = analyzeUrl.evalJS(checkJs, result = res) as StrResponse
+                    res = applyLoginCheckResult(bookSource, analyzeUrl, checkJs, res)
                 }
             }
             checkRedirect(bookSource, res)
@@ -417,6 +417,32 @@ object WebBook {
                 Debug.log(bookSource.bookSourceUrl, "┌重定向后地址")
                 Debug.log(bookSource.bookSourceUrl, "└${response.url}")
             }
+        }
+    }
+
+    private fun applyLoginCheckResult(
+        bookSource: BookSource,
+        analyzeUrl: AnalyzeUrl,
+        checkJs: String,
+        response: StrResponse
+    ): StrResponse {
+        val jsResult = analyzeUrl.evalJS(checkJs, result = response)
+        return jsResult as? StrResponse ?: run {
+            val checkJsPreview = checkJs
+                .lineSequence()
+                .firstOrNull { it.isNotBlank() }
+                ?.trim()
+                ?.take(160)
+                ?: checkJs.trim().take(160)
+            AppLog.put(
+                "loginCheckJs返回类型错误, 已回退原响应\n" +
+                    "sourceName=${bookSource.bookSourceName}\n" +
+                    "sourceUrl=${bookSource.bookSourceUrl}\n" +
+                    "requestUrl=${response.url}\n" +
+                    "resultType=${jsResult?.javaClass?.name ?: "null"}\n" +
+                    "checkJsPreview=$checkJsPreview"
+            )
+            response
         }
     }
 
