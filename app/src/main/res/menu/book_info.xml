@@ -9,12 +9,6 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/menu_share_it"
-        android:icon="@drawable/ic_share"
-        android:title="@string/share"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/menu_upload"
         android:title="@string/upload_to_remote"
         app:showAsAction="never" />
@@ -32,11 +26,6 @@
     <item
         android:id="@+id/menu_login"
         android:title="@string/login"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu_top"
-        android:title="@string/to_top"
         app:showAsAction="never" />
 
     <item
