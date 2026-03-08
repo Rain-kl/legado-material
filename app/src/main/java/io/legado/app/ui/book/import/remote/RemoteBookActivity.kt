@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.SubMenu
 import androidx.activity.addCallback
-import androidx.activity.viewModels
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +28,7 @@ import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.showHelp
 import io.legado.app.utils.toastOnUi
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
 /**
@@ -39,7 +39,7 @@ class RemoteBookActivity : BaseImportBookActivity<RemoteBookViewModel>(),
     SelectActionBar.CallBack,
     ServersDialog.Callback {
 
-    override val viewModel by viewModels<RemoteBookViewModel>()
+    override val viewModel by viewModel<RemoteBookViewModel>()
     private val adapter by lazy { RemoteBookAdapter(this, this) }
     private var groupMenu: SubMenu? = null
     private var latestUiState = RemoteBookUiState()
