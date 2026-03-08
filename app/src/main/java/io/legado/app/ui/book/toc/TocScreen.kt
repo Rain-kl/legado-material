@@ -407,7 +407,7 @@ fun TocScreen(
 
                         else -> {
                             RoundDropdownMenuItem(
-                                text = "按分数排序",
+                                text = { Text("按分数排序") },
                                 trailingIcon = {
                                     Checkbox(
                                         checked = viewModel.moderationSortByScore.collectAsStateWithLifecycle().value,
@@ -418,7 +418,7 @@ fun TocScreen(
                             )
                             PillDivider()
                             RoundDropdownMenuItem(
-                                text = "重新安全审查",
+                                text = { Text("重新安全审查") },
                                 onClick = {
                                     viewModel.runSafetyModerationByToc(forceRefresh = true)
                                     dismiss()
